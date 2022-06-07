@@ -18,6 +18,7 @@ var connection = mysql.createConnection({
     database: "movie_planner_db"
 });
 
+
 connection.connect(function(err) {
     if (err) {
         console.error("Something went wrong!");
