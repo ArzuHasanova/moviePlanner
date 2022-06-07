@@ -1,0 +1,62 @@
+<div class="container">
+    <h1>Movies Planner</h1>
+    <ul>
+        {{#each movies}}
+            <li>{{id}} - {{movie}}</li>
+<button data-movieID="{{id}}">&times;</button>
+        {{/each}}
+    </ul>
+
+    <h2> Add movie</h2>
+    <label for="new-movie-input">movie</label>
+	<input id="new-movie-input" type="text"/>
+    <button id="new-movie-btn" >Add</button>
+
+    <h2>Update movie</h2>
+    <label for="movie-selections">Choose a movie</label>
+	<select id="movie-selections">
+    {{#each movies}}
+        <option value="{{id}}">{{movie}}</option>
+    {{/each}}
+    </select>
+    <label for="update-movie-input">movie</label><input id="update-movie-input" type="text"/>
+    <button id="update-movie-btn" >Update </button>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        const $newMovieInput = $('#new-movie-input');
+        const $newMovieButton = $('#new-movie-btn');
+        const $deleteButtons = $('.delete');
+        const $select = $('#movie-selections');
+        const $updateMovieInput = $('#update-movie-input');
+        const $updateMovieButton = $('#update-movie-btn');
+        $newMovieButton.on('click', () => {
+            const newMovieText = $newMovieInput.val().trim();
+            $.ajax('/api/movies', {
+                type: 'POST',
+                data: {newMovieText}
+            }).then(() => location.reload())
+                    .catch(err => console.log(err))
+        });
+        $deleteButtons.on('click', function () {
+            const id = $(this).data('movieID');
+            $.ajax(`/api/movies/${id}`, {
+                type: 'DELETE'
+            })
+                    .then(() => location.reload())
+                    .catch(err => console.log(err))
+        });
+        $updateMovieButton.on('click', () => {
+            const updateMovieText = $updateMovieInput.val().trim();
+            const id = $select.val();
+            $.ajax(`/api/movies/${id}`, {
+                type: 'PUT',
+                data: {updateMovieText}
+            })
+                    .then(() => location.reload())
+                    .catch(err => console.log(err))
+        });
+    });
+</script>
